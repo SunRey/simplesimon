@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset='UTF-8'>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>Simple Simon</title>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+        <!-- <link rel="stylesheet" href="css/main.css"> -->
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+        <style>
+            #color1 { background: red; }
+            #color2 { background-color: green; }
+            #color3 { background-color: orange; }
+            #color4 { background-color: blue; }
+            #run_button, #random, #start { float: right; }
+            .shapes {
+                width: 120px;
+                height: 120px;
+                border-radius: 60px;
+                display: inline-block;
+                opacity: 0.5;
+            }
+            .shapes:hover{ opacity: 0.7; }
+            .shapes:active { opacity: 1; }
+            .active {opacity: 1;}
+
+        </style>
+    </head>
+    <body>
+
+        <div class="container well">
+            <h1> Simple Simon Game </h1>
+            <div class="jumbotron">
+                <button id='color1' class='shapes' value='1' data-color'red'></button>
+                <button id='color2' class='shapes' value='2' data-color'green'></button>
+                <button id='color3' class='shapes' value='3' data-color'orange'></button>
+                <button id='color4' class='shapes' value='4' data-color'blue'></button>
+                <button id='run_button' class='btn btn-success' >Start Game!</button>
+
+            </div>
+        </div>
+
+        <script>
+        (function() {
+
+            var savePatterns = {
+                simonArrayPattern: [],
+                userArrayPattern: [],
+                pushSimonColorToArray: function() {
+                    this.simonArrayPattern.push(generateSimonColor());
+                },
+                pushUserColorArray: function(userChoice) {
+                    this.userArrayPattern.push(userChoice);
+                    validatePattern();
+                    console.log(this.userArrayPattern);
+                }
+            };
+
+            function runGame () {
+                savePatterns.pushSimonColorToArray();
+                controlSimonPattern();
+            }
+            function generateSimonColor() {
+                return ( Math.floor(Math.random() * (4 - 1 + 1)) + 1);
+            }
+            function controlSimonPattern () {
+                var duration = 2000;
+                savePatterns.simonArrayPattern.forEach(function (value) {
+                    setTimeout(function(){
+                        showSimonPattern(value);
+                    }, duration);
+                    duration += 900;
+                    console.log(duration);
+                });
+            } 
+            function showSimonPattern(pattern) {
+                $('#color'+ pattern).addClass('active');
+                setTimeout(function () {
+                    $('#color' + pattern).removeClass('active');
+                }, 800); 
+            }
+            function validatePattern () {
+                var simon = savePatterns.simonArrayPattern,
+                    user = savePatterns.userArrayPattern;
+                if (user[user.length-1] !== simon[user.length-1]) {
+                    user = [];
+                    gameFail();
+                } else {
+                    vaildatedSuccess();
+                }
+            }
+            function vaildatedSuccess () {
+                if (savePatterns.simonArrayPattern.length === savePatterns.userArrayPattern.length){
+                    console.log('Pattern Success');
+                    savePatterns.userArrayPattern = [];
+                    console.log('valid array clear');
+                    runGame();
+                }
+            }
+            function gameFail() {
+                savePatterns.userArrayPattern = [];
+                savePatterns.simonArrayPattern = [];
+                console.log('fail game; array cleared');
+                console.log('Game Over!');
+            }
+
+            $('.shapes').on('click', function() {
+                var userChoice = parseInt($(this).attr('value'));
+                savePatterns.pushUserColorArray(userChoice);
+                console.log(this.id);
+            })
+            $('#run_button').on('click', function() {
+                runGame();
+            });        
+
+            // showSimonPattern(); function() {
+        })();
+        </script>
+    </body>
+</html>
