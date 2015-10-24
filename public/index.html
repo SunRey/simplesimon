@@ -14,7 +14,7 @@
             #color2 { background-color: green; }
             #color3 { background-color: orange; }
             #color4 { background-color: blue; }
-            #run_button, #random, #start { float: right; }
+            #run_button, #disable_butt { float: right; }
             .shapes {
                 width: 120px;
                 height: 120px;
@@ -25,7 +25,6 @@
             .shapes:hover{ opacity: 0.7; }
             .shapes:active { opacity: 1; }
             .active {opacity: 1;}
-
         </style>
     </head>
     <body>
@@ -33,11 +32,13 @@
         <div class="container well">
             <h1> Simple Simon Game </h1>
             <div class="jumbotron">
-                <button id='color1' class='shapes' value='1' data-color'red'></button>
-                <button id='color2' class='shapes' value='2' data-color'green'></button>
-                <button id='color3' class='shapes' value='3' data-color'orange'></button>
-                <button id='color4' class='shapes' value='4' data-color'blue'></button>
-                <button id='run_button' class='btn btn-success' >Start Game!</button>
+                <a id='color1' class='shapes red' value='1' data-role="button" style="pointer-events: none;"></a>
+                <a id='color2' class='shapes grn' value='2' data-role="button" style="pointer-events: none;"></a>
+                <a id='color3' class='shapes orng' value='3' data-role="button" style="pointer-events: none;"></a>
+                <a id='color4' class='shapes blue' value='4' data-role="button" style="pointer-events: none;"></a>
+                <button id='run_button' class='btn btn-success'>Start Game!</button>
+                <!-- <button id='disable_butt' class='btn btn-warning'>Enable Pointers!</button> -->
+                <h4 class='' id='level_title'>Current level:  <span id='level' class=''>0</span></h4>
 
             </div>
         </div>
@@ -45,75 +46,101 @@
         <script>
         (function() {
 
-            var savePatterns = {
+            var patternsAndLevel = {
                 simonArrayPattern: [],
                 userArrayPattern: [],
-                pushSimonColorToArray: function() {
+                currentLevel: 0,
+                pushSimonColorToArray: function () {
                     this.simonArrayPattern.push(generateSimonColor());
                 },
-                pushUserColorArray: function(userChoice) {
+                pushUserColorArray: function (userChoice) {
                     this.userArrayPattern.push(userChoice);
                     validatePattern();
                     console.log(this.userArrayPattern);
+                },
+                nextLevel: function () {
+                    this.currentLevel++;
+                    console.log(this.currentLevel);
+                    $('#level').text(this.currentLevel);
+                },
+                resetLevel: function () {
+                    this.currentLevel = 0;
+                    $('#level').text(this.currentLevel);                    
                 }
             };
 
             function runGame () {
-                savePatterns.pushSimonColorToArray();
+                patternsAndLevel.nextLevel();
+                patternsAndLevel.pushSimonColorToArray();
                 controlSimonPattern();
             }
-            function generateSimonColor() {
+            function pointerEventsAuto () {
+                $('.shapes').css('pointer-events', 'auto');
+            }
+            function pointerEventsNone () {
+                $('.shapes').css('pointer-events', 'none');
+            }
+            function generateSimonColor () {
                 return ( Math.floor(Math.random() * (4 - 1 + 1)) + 1);
             }
             function controlSimonPattern () {
-                var duration = 2000;
-                savePatterns.simonArrayPattern.forEach(function (value) {
+                var duration = 1500;
+                patternsAndLevel.simonArrayPattern.forEach(function (value) {
                     setTimeout(function(){
                         showSimonPattern(value);
                     }, duration);
                     duration += 900;
                     console.log(duration);
                 });
+                setTimeout(pointerEventsAuto, duration);
             } 
-            function showSimonPattern(pattern) {
+            function showSimonPattern (pattern) {
                 $('#color'+ pattern).addClass('active');
                 setTimeout(function () {
                     $('#color' + pattern).removeClass('active');
-                }, 800); 
+                }, 500); 
             }
             function validatePattern () {
-                var simon = savePatterns.simonArrayPattern,
-                    user = savePatterns.userArrayPattern;
+                var simon = patternsAndLevel.simonArrayPattern,
+                    user = patternsAndLevel.userArrayPattern;
                 if (user[user.length-1] !== simon[user.length-1]) {
-                    user = [];
                     gameFail();
                 } else {
                     vaildatedSuccess();
                 }
             }
             function vaildatedSuccess () {
-                if (savePatterns.simonArrayPattern.length === savePatterns.userArrayPattern.length){
+                if (patternsAndLevel.simonArrayPattern.length === patternsAndLevel.userArrayPattern.length){
                     console.log('Pattern Success');
-                    savePatterns.userArrayPattern = [];
+                    patternsAndLevel.userArrayPattern = [];
+                    pointerEventsNone();
                     console.log('valid array clear');
                     runGame();
                 }
             }
-            function gameFail() {
-                savePatterns.userArrayPattern = [];
-                savePatterns.simonArrayPattern = [];
+            function gameFail () {
+                patternsAndLevel.userArrayPattern = [];
+                patternsAndLevel.simonArrayPattern = [];
+                patternsAndLevel.resetLevel();
+                pointerEventsNone();
+                $('#run_button').attr("disabled", false)
                 console.log('fail game; array cleared');
                 console.log('Game Over!');
             }
 
             $('.shapes').on('click', function() {
                 var userChoice = parseInt($(this).attr('value'));
-                savePatterns.pushUserColorArray(userChoice);
+                patternsAndLevel.pushUserColorArray(userChoice);
                 console.log(this.id);
             })
             $('#run_button').on('click', function() {
+                $('#run_button').attr("disabled", true);
                 runGame();
-            });        
+
+            });   
+            // $('#disable_butt').on('click', function() {
+            //     $('.shapes').css('pointer-events', 'auto');
+            // })     
 
             // showSimonPattern(); function() {
         })();
