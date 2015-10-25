@@ -6,7 +6,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <title>Simple Simon</title>
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
-        <!-- <link rel="stylesheet" href="css/main.css"> -->
+        <script src='https://cdnjs.cloudflare.com/ajax/libs/buzz/1.1.10/buzz.min.js'></script>
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
         <style>
@@ -39,7 +39,7 @@
                 <button id='run_button' class='btn btn-success'>Start Game!</button>
                 <!-- <button id='disable_butt' class='btn btn-warning'>Enable Pointers!</button> -->
                 <h4 class='' id='level_title'>Current level:  <span id='level' class=''>0</span></h4>
-
+                <h4 class='' id='high_title'>High Score:   <span id='high_score'></span></h4>
             </div>
         </div>
 
@@ -50,6 +50,7 @@
                 simonArrayPattern: [],
                 userArrayPattern: [],
                 currentLevel: 0,
+                highestLevel: 0,
                 pushSimonColorToArray: function () {
                     this.simonArrayPattern.push(generateSimonColor());
                 },
@@ -66,6 +67,12 @@
                 resetLevel: function () {
                     this.currentLevel = 0;
                     $('#level').text(this.currentLevel);                    
+                },
+                displayHighestLevel: function () {
+                    if(this.highestLevel < this.currentLevel) {
+                        this.highestLevel = this.currentLevel;
+                        $('#high_score').text(this.highestLevel);
+                    }
                 }
             };
 
@@ -119,6 +126,7 @@
                 }
             }
             function gameFail () {
+                patternsAndLevel.displayHighestLevel();
                 patternsAndLevel.userArrayPattern = [];
                 patternsAndLevel.simonArrayPattern = [];
                 patternsAndLevel.resetLevel();
