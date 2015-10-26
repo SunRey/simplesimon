@@ -1,0 +1,16 @@
+#color1 { background: red; }
+#color2 { background-color: green; }
+#color3 { background-color: orange; }
+#color4 { background-color: blue; }
+#run_button, #flash_butt { float: right; }
+.shapes {
+    width: 120px;
+    height: 120px;
+    border-radius: 60px;
+    display: inline-block;
+    opacity: 0.5;
+    cursor: crosshair;
+}
+.shapes:hover{ opacity: 0.7; }
+.shapes:active { opacity: 1; }
+.active {opacity: 1;}
