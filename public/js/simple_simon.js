@@ -30,20 +30,22 @@
                 $('#high_score').text(this.highestLevel);
             }
         }
-    };
-
-    var mySound = new buzz.sound("/sounds/Sad_Trombone.wav");
+    },
+        shapesClass = {
+            shapes: $('.shapes'),
+            pointerEventsAuto: function () {
+                shapesClass.shapes.css('pointer-events', 'auto');
+            },
+            pointerEventsNone: function () {
+                shapesClass.shapes.css('pointer-events', 'none');
+            }
+        },
+        mySound = new buzz.sound("/sounds/Sad_Trombone.wav");
 
     function runGame () {
         patternsAndLevel.nextLevel();
         patternsAndLevel.pushSimonColorToArray();
         controlSimonPattern();
-    }
-    function pointerEventsAuto () {
-        $('.shapes').css('pointer-events', 'auto');
-    }
-    function pointerEventsNone () {
-        $('.shapes').css('pointer-events', 'none');
     }
     function generateSimonColor () {
         return ( Math.floor(Math.random() * (4 - 1 + 1)) + 1);
@@ -57,7 +59,7 @@
             duration += 900;
             console.log(duration);
         });
-        setTimeout(pointerEventsAuto, duration);
+        setTimeout(shapesClass.pointerEventsAuto, duration);
     } 
     function showSimonPattern (pattern) {
         $('#color'+ pattern).addClass('active');
@@ -77,14 +79,14 @@
     }
     function vaildatedSuccess () {
         if (patternsAndLevel.simonArrayPattern.length === patternsAndLevel.userArrayPattern.length){
-            pointerEventsNone();
+            shapesClass.pointerEventsNone();
             patternsAndLevel.userArrayPattern = [];
             runGame();
         }
     }
     function missedPatternFlash (buttonId) {
         var i, duration = 500;
-        for(i=0; i<3; i++) {
+        for(i=0; i<4; i++) {
             setTimeout(function() {
                 showSimonPattern(buttonId);
             }, duration); 
@@ -93,7 +95,7 @@
     }
     function gameFail () {
         mySound.play();
-        pointerEventsNone();
+        shapesClass.pointerEventsNone();
         patternsAndLevel.userArrayPattern = [];
         patternsAndLevel.simonArrayPattern = [];
         patternsAndLevel.resetLevel();
@@ -103,7 +105,7 @@
         console.log('Game Over!');
     }
 
-    $('.shapes').on('click', function() {
+    shapesClass.shapes.on('click', function() {
         var userChoice = parseInt($(this).attr('value'));
         patternsAndLevel.pushUserColorArray(userChoice);
         console.log(this.id);

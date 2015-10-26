@@ -10,17 +10,20 @@
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
         <link rel="stylesheet" type="text/css" href="/css/simple_simon.css">
+
     </head>
     <body>
 
-        <div class="container well">
+        <div class="container">
             <h1> Simple Simon Game </h1>
-            <div class="jumbotron">
+            <div id="outer_circle">
                 <a id='color1' class='shapes red' value='1' data-role="button" style="pointer-events: none;"></a>
-                <a id='color2' class='shapes grn' value='2' data-role="button" style="pointer-events: none;"></a>
+                <a id='color2' class='shapes grn' value='2' data-role="button" style="pointer-events: none;"></a><br>
                 <a id='color3' class='shapes orng' value='3' data-role="button" style="pointer-events: none;"></a>
                 <a id='color4' class='shapes blue' value='4' data-role="button" style="pointer-events: none;"></a>
-                <button id='run_button' class='btn btn-success'>Start Game!</button>
+            </div>
+            <div class="jumbotron controls">
+                <button id='run_button' class='btn btn-primary'>Start Game!</button>
                 <h4 class='' id='level_title'>Current level:  <span id='level' class=''>0</span></h4>
                 <h4 class='' id='high_title'>High Score:   <span id='high_score'></span></h4>
             </div>
