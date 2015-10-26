@@ -14,7 +14,7 @@
             #color2 { background-color: green; }
             #color3 { background-color: orange; }
             #color4 { background-color: blue; }
-            #run_button, #disable_butt { float: right; }
+            #run_button, #flash_butt { float: right; }
             .shapes {
                 width: 120px;
                 height: 120px;
@@ -37,7 +37,7 @@
                 <a id='color3' class='shapes orng' value='3' data-role="button" style="pointer-events: none;"></a>
                 <a id='color4' class='shapes blue' value='4' data-role="button" style="pointer-events: none;"></a>
                 <button id='run_button' class='btn btn-success'>Start Game!</button>
-                <!-- <button id='disable_butt' class='btn btn-warning'>Enable Pointers!</button> -->
+                <!-- <button id='flash_butt' class='btn btn-warning'>Flash Buttons!</button> -->
                 <h4 class='' id='level_title'>Current level:  <span id='level' class=''>0</span></h4>
                 <h4 class='' id='high_title'>High Score:   <span id='high_score'></span></h4>
             </div>
@@ -61,8 +61,9 @@
                 },
                 nextLevel: function () {
                     this.currentLevel++;
-                    console.log(this.currentLevel);
                     $('#level').text(this.currentLevel);
+                    this.displayHighestLevel();
+                    console.log(this.currentLevel);
                 },
                 resetLevel: function () {
                     this.currentLevel = 0;
@@ -70,7 +71,7 @@
                 },
                 displayHighestLevel: function () {
                     if(this.highestLevel < this.currentLevel) {
-                        this.highestLevel = this.currentLevel;
+                        this.highestLevel = (this.currentLevel - 1);
                         $('#high_score').text(this.highestLevel);
                     }
                 }
@@ -111,6 +112,7 @@
                 var simon = patternsAndLevel.simonArrayPattern,
                     user = patternsAndLevel.userArrayPattern;
                 if (user[user.length-1] !== simon[user.length-1]) {
+                    missedPatternFlash(simon[user.length-1]);
                     gameFail();
                 } else {
                     vaildatedSuccess();
@@ -118,20 +120,27 @@
             }
             function vaildatedSuccess () {
                 if (patternsAndLevel.simonArrayPattern.length === patternsAndLevel.userArrayPattern.length){
-                    console.log('Pattern Success');
-                    patternsAndLevel.userArrayPattern = [];
                     pointerEventsNone();
-                    console.log('valid array clear');
+                    patternsAndLevel.userArrayPattern = [];
                     runGame();
                 }
             }
+            function missedPatternFlash (buttonId) {
+                var i, duration = 500;
+                for(i=0; i<3; i++) {
+                    setTimeout(function() {
+                        showSimonPattern(buttonId);
+                    }, duration); 
+                    duration += 900;     
+                };
+            }
             function gameFail () {
-                patternsAndLevel.displayHighestLevel();
+                pointerEventsNone();
                 patternsAndLevel.userArrayPattern = [];
                 patternsAndLevel.simonArrayPattern = [];
                 patternsAndLevel.resetLevel();
-                pointerEventsNone();
                 $('#run_button').attr("disabled", false)
+                $('#run_button').text('Replay Game?');
                 console.log('fail game; array cleared');
                 console.log('Game Over!');
             }
@@ -146,8 +155,7 @@
                 runGame();
 
             });   
-            // $('#disable_butt').on('click', function() {
-            //     $('.shapes').css('pointer-events', 'auto');
+            // $('#flash_butt').on('click', function() {
             // })     
 
             // showSimonPattern(); function() {
