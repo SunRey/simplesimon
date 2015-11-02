@@ -15,6 +15,7 @@
     <body>
 
         <div class="container">
+            <p id='game_over'>!!Game Over!!<p>
             <h1> Simple Simon Game </h1>
             <div id="outer_circle">
                 <a id='color1' class='shapes red' value='1' data-role="button" style="pointer-events: none;"></a>
@@ -22,7 +23,7 @@
                 <a id='color3' class='shapes orng' value='3' data-role="button" style="pointer-events: none;"></a>
                 <a id='color4' class='shapes blue' value='4' data-role="button" style="pointer-events: none;"></a>
             </div>
-            <div class="jumbotron controls">
+            <div class="jumbotron controls well">
                 <button id='run_button' class='btn btn-primary'>Start Game!</button>
                 <h4 class='' id='level_title'>Current level:  <span id='level' class=''>0</span></h4>
                 <h4 class='' id='high_title'>High Score:   <span id='high_score'></span></h4>

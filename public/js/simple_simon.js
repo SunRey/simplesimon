@@ -1,36 +1,37 @@
 "use strict";
-(function() {
-
-    var patternsAndLevel = {
-        simonArrayPattern: [],
-        userArrayPattern: [],
-        currentLevel: 0,
-        highestLevel: 0,
-        pushSimonColorToArray: function () {
-            this.simonArrayPattern.push(generateSimonColor());
-        },
-        pushUserColorArray: function (userChoice) {
-            this.userArrayPattern.push(userChoice);
-            validatePattern();
-            console.log(this.userArrayPattern);
-        },
-        nextLevel: function () {
-            this.currentLevel++;
-            $('#level').text(this.currentLevel);
-            this.displayHighestLevel();
-            console.log(this.currentLevel);
-        },
-        resetLevel: function () {
-            this.currentLevel = 0;
-            $('#level').text(this.currentLevel);                    
-        },
-        displayHighestLevel: function () {
-            if(this.highestLevel < this.currentLevel) {
-                this.highestLevel = (this.currentLevel - 1);
-                $('#high_score').text(this.highestLevel);
+// (function() {
+    var mySound = new buzz.sound("/sounds/Sad_Trombone.wav"),
+        patternsAndLevel = {
+            simonArrayPattern: [],
+            userArrayPattern: [],
+            currentLevel: 0,
+            highestLevel: 0,
+            levelHtml: $('#level'),
+            pushSimonColorToArray: function () {
+                this.simonArrayPattern.push(generateSimonColor());
+            },
+            pushUserColorArray: function (userChoice) {
+                this.userArrayPattern.push(userChoice);
+                validatePattern();
+                console.log(this.userArrayPattern);
+            },
+            nextLevel: function () {
+                this.currentLevel++;
+                this.levelHtml.text(this.currentLevel);
+                this.displayHighestLevel();
+                console.log(this.currentLevel);
+            },
+            resetLevel: function () {
+                this.currentLevel = 0;
+                this.levelHtml.text(this.currentLevel);                    
+            },
+            displayHighestLevel: function () {
+                if(this.highestLevel < this.currentLevel) {
+                    this.highestLevel = (this.currentLevel - 1);
+                    $('#high_score').text(this.highestLevel);
+                }
             }
-        }
-    },
+        },
         shapesClass = {
             shapes: $('.shapes'),
             pointerEventsAuto: function () {
@@ -39,8 +40,7 @@
             pointerEventsNone: function () {
                 shapesClass.shapes.css('pointer-events', 'none');
             }
-        },
-        mySound = new buzz.sound("/sounds/Sad_Trombone.wav");
+        };
 
     function runGame () {
         patternsAndLevel.nextLevel();
@@ -93,25 +93,28 @@
             duration += 900;     
         };
     }
+    function replayButton () {
+        var replayButton = $('#run_button');
+        replayButton.attr("disabled", false);
+        replayButton.text('Replay Game?');
+    }
     function gameFail () {
         mySound.play();
         shapesClass.pointerEventsNone();
         patternsAndLevel.userArrayPattern = [];
         patternsAndLevel.simonArrayPattern = [];
         patternsAndLevel.resetLevel();
-        $('#run_button').attr("disabled", false)
-        $('#run_button').text('Replay Game?');
-        console.log('fail game; array cleared');
-        console.log('Game Over!');
+        replayButton();
     }
 
     shapesClass.shapes.on('click', function() {
         var userChoice = parseInt($(this).attr('value'));
         patternsAndLevel.pushUserColorArray(userChoice);
         console.log(this.id);
-    })
+    });
+
     $('#run_button').on('click', function() {
-        $('#run_button').attr("disabled", true);
+        $(this).attr("disabled", true);
         runGame();
     });   
-})();
+// })();
